@@ -11,12 +11,18 @@ Quite nice to cache really great articles throughout the work week then relax wi
 
 ## Configuration
 
-Place the in 100-sync-dotepub.rules and edit it, you'll need to change the USB ID's and the script parameters (user name, mount dir, source of epub files)
+Place the 100-sync-dotepub.rules in /etc/udev/rules.d/ and edit it, you'll need to change the USB ID's and the script parameters (user name, mount dir, source of epub files)
 
 ```
 lsusb|grep Kindle
 Bus 001 Device 043: ID 1949:0004 Lab126, Inc. Amazon Kindle 3/4/Paperwhite
 
+```
+
+So now your 100-sync-dotepub.rules in /etc/udev/rules.d/100-sync-dotepub.rules should look roughly like (with changed parameters)
+
+```
+ACTION=="add", ATTRS{idVendor}=="1949", ATTRS{idProduct}=="0004", RUN+="/home/dgtlmoon/scripts/sync-kindle-epub dgtlmoon /media/dgtlmoon/Kindle /home/dgtlmoon/Downloads"
 ```
 
 And then place the sync-kindle-epub script in the appropriate target directly as specified in the 100-sync-dotepub.rules - I'm guessing you're not me :)
