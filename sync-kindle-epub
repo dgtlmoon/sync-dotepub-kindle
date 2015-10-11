@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set +H
+
+user="$1"
+destdir="$2"
+sourcedir="$3"
+
+# Wait for the event to settle
+sleep 3
+mkdir -p $destdir &>/dev/null
+dev=`ls /dev/disk/by-id/|grep part1|grep -i Kindle`
+if [ ! -n "$dev" ]
+then
+  logger "Kindle not found in /dev/disk/by-id/ aborting."
+  exit
+fi
+
+
+mount -o uid=$user -o gid=$user "/dev/disk/by-id/$dev" $destdir
+
+if [ ! -d "$destdir/documents" ]
+then
+  logger "Kindle $destdir/documents does not seem to exist after trying mount, aborting."
+  exit
+fi
+
+# Remove only dotepub documents from Kindle
+grep -lr dotepub.com $destdir/documents|while read fname
+do
+  logger "Removed $fname from Kindle"
+  rm -f "$fname"
+done
+
+# Move any epub/mobi in $sourcedir to the Kindle
+find "$sourcedir"|grep -iE "(mobi|epub)$"|while read fname
+do
+  logger "Added $fname to Kindle"
+  mv -f "$fname" $destdir/documents
+done
+
+# Ensure all is written and flushed and eject
+sync
+
+umount $destdir
+logger "Kindle dotepub sync done"
+

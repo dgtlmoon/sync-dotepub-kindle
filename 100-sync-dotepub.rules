@@ -1,0 +1,1 @@
+ACTION=="add", ATTRS{idVendor}=="1949", ATTRS{idProduct}=="0004", RUN+="/home/dgtlmoon/scripts/sync-kindle-epub dgtlmoon /media/dgtlmoon/Kindle /home/dgtlmoon/Downloads"
